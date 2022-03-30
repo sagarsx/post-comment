@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+<body>
+
+    <!-- --------------------------------------------------------NAVBAR --------------------------------------------------------------------------------------------------------------->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                    Intellial
+                </a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Feed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Artical</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Q&A</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Network</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Inbox</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-flex align-items-center">
+                <a class="text-reset me-3" href="#">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+                <div class="dropdown">
+                    <p class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
+                        id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        {{ user.get_username}}
+                    </p>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                        <li>
+                            <a class="dropdown-item" href="#">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- --------------------------------------------------------HEADER --------------------------------------------------------------------------------------------------------------->
+
+    <header class="masthead">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div>
+                        <h3 class=" site-heading my-4 mt-3 text-danger"> Feed</h3>
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <a id="composebtn" class="btn btn-sm btn-primary my-4 mt-3">Compose</a>
+               -->
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <a class="btn btn-sm btn-danger my-4 mt-3" href="{% url 'login' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <form action="{% url 'compose'  %}" method="POST" class="col-lg-6 offset-lg-3">
+                {% csrf_token %}
+                <div style="display: none;" id="postform">
+                    <div>
+                        <h2>Compose New Post</h2>
+                    </div>
+                    <div>
+                        <textarea name="message" placeholder="Write a post" cols="60" rows="2" required></textarea>
+                    </div>
+
+                    <div class="small d-flex justify-content-center">
+                        <input type="submit" value="POST">
+                        <button id="cancel" type="reset" class="btn btn-light"
+                            style="margin-left: 10px;">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </header>
+    <!-- --------------------------------------------------------COMPOSE POST FORM --------------------------------------------------------------------------------------------------------------->
+
+    <div>
+        <form action="{% url 'compose' %}" method="POST" class="col-lg-6 offset-lg-3">
+            {% csrf_token %}
+            <div style="display: none;" id="form">
+                <div>
+                    <h3>Compose a new post</h3>
+                </div>
+                <div>
+                    <textarea name="message" placeholder="Write a new Post" cols="40" rows="4" required></textarea>
+                </div>
+
+                <div class="small d-flex justify-content-center">
+                    <input type="submit" value="POST">
+                    <button id="cancel" type="reset" class="btn btn-light" style="margin-left: 10px;">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- --------------------------------------------------------POSTS --------------------------------------------------------------------------------------------------------------->
+
+    <div class="container">
+        <h2>Lattest posts</h2>
+        <div class="row">
+            <div class="col-md-8 mt-3 left">
+                <div class="card mb-4">
+                    <div class="card-body">
+
+                        {% for i in post %}
+
+                        <div class="row">
+                            <div class="col">
+                                <h1 class="card-title text-primary">{{i.user__username}}</h1>
+                            </div>
+                            <div class="col">
+                                <p class="card-title text-muted h6">{{i.created}}</p>
+                            </div>
+                            <div class="col">
+                                {% if request.user.username == i.user__username %}
+                                <a href="/delete/{{i.id}}" class="text-danger">delet</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <h1 class="card-text">{{i.message}}</h1>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col" id="like">
+<!-- --------------------------------------------------------LIKE FORM --------------------------------------------------------------------------------------------------------------->
+                                        <form action="{% url 'like' i.id  %}" name="like" method="POST">
+                                            {% csrf_token %}
+                                            <button type='submit' name='like' value="{{ i.id }}"
+                                                class="btn btn-sm btn-primary my-4 mt-3">like</button>
+                                        </form>
+                                      
+
+                                        {% for key,value in like_count.items %}
+                                        {% if key == i.id %}
+                                        <p>like({{value}})</p>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col">
+ <!-- --------------------------------------------------------DISLIKE FORM --------------------------------------------------------------------------------------------------------------->
+
+                                        <form action="{% url 'dislike' i.id  %}" method="post" name="dislike">
+                                            {% csrf_token %}
+                                            <button type='submit' name='dislike' value="{{ i.id }}"
+                                                class="btn btn-sm btn-primary my-4 mt-3">dislike</button>
+                                        </form>
+                                        {% comment %} <p>dislike({{like_num}})</p> {% endcomment %}
+                                        {% for key,value in dislike_count.items %}
+                                        {% if key == i.id %}
+                                        <p>dislike({{value}})</p>
+                                        {% endif %}
+                                        {% endfor %}
+                               
+                                    </div>
+                                    <div class="">
+
+                                   
+                                        {% for count in comment_count %}
+                                        {% if count.post_id == i.id %}
+                                        <p>comment({{count.comment__count}})</p>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+<!-- --------------------------------------------------------COMMENT FORM --------------------------------------------------------------------------------------------------------------->
+
+                                    <form action="{% url 'comment' i.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div>
+                                            <div>
+                                                <textarea name="comment" placeholder="Write a new comment...." cols="30"
+                                                    rows="1" required></textarea>
+                                            </div>
+                                            <div class="small justify-content-center">
+                                                <input type="submit" value="Comment">
+                                               
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col ">
+                                <div class="row">
+                                    <div class="col">
+                                        {% for j in comment %}
+                                        {% if j.post_id == i.id %}
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="card-title text-primary">{{j.user__username}}</hp>
+                                            </div>
+                                            <div class="col">
+                                                <p class="card-title text-muted ">{{j.created}}</p>
+                                            </div>
+                                            <div class="col">
+
+                                                {% if request.user.username == j.user__username %}
+
+                                                <a href="/deletecomment/{{j.id}}" class="text-danger">delet comment</a>
+
+                                                {% endif %}
+
+                                            </div>
+                                        </div>
+
+                                        <p class="card-text">{{j.comment}}</p>
+                                        {% endif %}
+                                        <hr>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
+<!-- --------------------------------------------------------JS --------------------------------------------------------------------------------------------------------------->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+    </script>
+<script>
+    $(document).ready(function () {
+        $('#composebtn').click(function () {
+            $('#postform').show();
+
+        });
+        $('#cancel').click(function () {
+            $('#postform').hide();
+        });
+
+    });
+</script>
